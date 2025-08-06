@@ -5,6 +5,7 @@
 This project extracts 2D drawing views and 3D mesh data from Onshape documents and computes the Gromov-Wasserstein correspondences between them using the POT library.
 
 In your terminal, run the command below to get `drawingData.json` along with corresponding plots. Note that the 3D URLs refer to those from `PART_STUDIO`.
+
 ```python getDocInfo.py <DRAWING_URL> <3D_WORKSPACE_URL> <3D_VERSION_URL>```
 
 ## Files
@@ -16,6 +17,7 @@ In your terminal, run the command below to get `drawingData.json` along with cor
 ## Requirements
 
 The dependencies used are:
+
 ```
 conda install -c conda-forge python-dotenv matplotlib scipy
 pip install numpy pot gdist
