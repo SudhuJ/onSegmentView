@@ -1,23 +1,28 @@
 # Onshape 2D-3D Correspondence
 
-`GW is yet to be completed as of now. Drawing plots and json data work for line segments.`
-
 This project extracts 2D drawing views and 3D mesh data from Onshape documents and computes the Gromov-Wasserstein correspondences between them using the POT library.
 
-In your terminal, run `python getDocInfo.py <DRAWING_URL> <3D_WORKSPACE_URL> <3D_VERSION_URL>` to get `drawingData.json` along with corresponding plots. Note that the latter links refer to `PART_STUDIO` tab.
+In your terminal, run the command below to get `drawingData.json` along with corresponding plots. Note that the 3D URLs refer to those from `PART_STUDIO`.
+
+```python getDocInfo.py <DRAWING_URL> <3D_WORKSPACE_URL> <3D_VERSION_URL>```
+
+Create a `data` folder to store the `.json` info. This is the input for our GW Implementation.
+
+```python gw.py metadata_{src_viewid}.json metadata_{tar_viewid}```
 
 ## Files
 
 - `getDocInfo.py`: Downloads geometry from Onshape (tessellated 3D meshes and 2D drawing views).
+- `gw.py`: Computes GW correspondences with *Euclidean* Metrics.
 - `plotDrawing.py`: Plots drawing views.
-- `gwCalc.py`: Computes GW correspondences with Geodesic/Euclidean Metrics.
+
 
 ## Requirements
 
 The dependencies used are:
+
 ```
-conda install -c conda-forge python-dotenv matplotlib scipy
-pip install numpy pot gdist
+conda install -c conda-forge python-dotenv matplotlib scipy numpy pot gdist
 ```
 
 For getting the API keys to enter in your .env file with names `ONSHAPE_ACCESS_KEY` & `ONSHAPE_SECRET_KEY`, 
