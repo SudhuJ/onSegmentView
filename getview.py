@@ -3,10 +3,12 @@ import os
 import json
 import re
 import requests
+import math
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
 import matplotlib.pyplot as plt
-from plotDrawing import plot_geometry_from_json
+import matplotlib.pyplot as plt
+from matplotlib.patches import Arc, Circle
 
 load_dotenv()
 ACCESS_KEY = os.getenv("ONSHAPE_ACCESS_KEY")
@@ -60,9 +62,91 @@ def get_partstudio_geometry(meta, mode="workspace"):
         json.dump(faces.json(), f, indent=2)
     print(f"[OK] Saved tessellation data for {mode}")
 
+def plot_geometry_from_json(file_path, ax=None):
+    """
+    Plots geometry from a JSON file and adds segment indices.
+    """
+    with open(file_path, "r") as f:
+        data = json.load(f)
+
+    if "bodyData" not in data:
+        print(f"[WARN] No bodyData in {file_path}")
+        return
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(10, 8))
+    else:
+        fig = ax.get_figure()
+
+    ax.set_title(os.path.basename(file_path))
+    ax.set_aspect("equal")
+    ax.tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
+
+    # Use enumerate to get an index for each geometry item
+    for idx, item in enumerate(data["bodyData"]):
+        geo = item.get("data", {})
+        geo_type = item.get("type", "").lower()
+        
+        # Define the style for the index labels, copied from gw.py
+        label_style = dict(
+            fontsize=8, 
+            ha='center', 
+            va='center', 
+            color='black', 
+            zorder=2, 
+            bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none', alpha=0.7)
+        )
+
+        if geo_type == "line":
+            start = geo["start"]
+            end = geo["end"]
+            ax.plot([start[0], end[0]], [start[1], end[1]], color='black')
+            
+            # Add index at the midpoint of the line
+            mid_x = (start[0] + end[0]) / 2
+            mid_y = (start[1] + end[1]) / 2
+            ax.text(mid_x, mid_y, str(idx), **label_style)
+
+        elif geo_type == "circle":
+            center = geo["center"]
+            radius = geo["radius"]
+            circle = Circle(center, radius, fill=False, edgecolor='blue')
+            ax.add_patch(circle)
+            
+            # Add index at the center of the circle
+            ax.text(center[0], center[1], str(idx), **label_style)
+
+        elif geo_type == "arc":
+            center = geo["center"]
+            radius = geo["radius"]
+            start_angle_rad = geo["startAngle"]
+            end_angle_rad = geo["endAngle"]
+            
+            # Matplotlib's Arc uses degrees
+            start_angle_deg = math.degrees(start_angle_rad)
+            end_angle_deg = math.degrees(end_angle_rad)
+            
+            arc = Arc(center, 2 * radius, 2 * radius, angle=0,
+                      theta1=start_angle_deg, theta2=end_angle_deg, edgecolor='green')
+            ax.add_patch(arc)
+
+            # --- MODIFICATION START ---
+            # Add index at the midpoint of the arc
+            avg_angle_rad = (start_angle_rad + end_angle_rad) / 2
+            mid_x = center[0] + radius * math.cos(avg_angle_rad)
+            mid_y = center[1] + radius * math.sin(avg_angle_rad)
+            ax.text(mid_x, mid_y, str(idx), **label_style)
+            # --- MODIFICATION END ---
+
+        else:
+            print(f"[NOTE] Unsupported geometry type: {geo_type}")
+            
+    return fig
+    
+    
 def main():
     if len(sys.argv) != 4:
-        print("Usage: python getDocInfo.py <drawing_url> <workspace_url> <version_url>")
+        print("Usage: python getview.py <drawing_url> <workspace_url> <version_url>")
         sys.exit(1)
 
     try:
