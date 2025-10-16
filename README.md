@@ -12,10 +12,9 @@ Create a `data` folder to store the `.json` info. This is the input for our GW I
 
 ## Files
 
-- `getDocInfo.py`: Downloads geometry from Onshape (tessellated 3D meshes and 2D drawing views).
-- `gw.py`: Computes GW correspondences with *Euclidean* Metrics.
-- `plotDrawing.py`: Plots drawing views.
-
+- `getview.py`: Downloads geometry from Onshape (tessellated 3D meshes and 2D drawing views).
+- `gw.py`: Computes and Plots GW correspondences with *Euclidean* Metrics (Can be changed).
+- `meshmaker.py`: Uses the `tesellated_faces.json` generated to output a `.obj` file.
 
 ## Requirements
 
