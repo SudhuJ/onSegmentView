@@ -1,10 +1,10 @@
 # Onshape 2D-3D Correspondence
 
-This project extracts 2D drawing views and 3D mesh data from Onshape documents and computes the Gromov-Wasserstein correspondences between them using the POT library.
+This project extracts 2D drawing views and 3D mesh data from Onshape documents and computes edge correspondences between them using the POT library.
 
 In your terminal, run the command below to get `drawingData.json` along with corresponding plots. Note that the 3D URLs refer to those from `PART_STUDIO`.
 
-```python getDocInfo.py <DRAWING_URL> <3D_WORKSPACE_URL> <3D_VERSION_URL>```
+```python getview.py <DRAWING_URL> <3D_WORKSPACE_URL> <3D_VERSION_URL>```
 
 Create a `data` folder to store the `.json` info. This is the input for our GW Implementation.
 
